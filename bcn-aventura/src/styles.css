@@ -2,42 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: #F1F5F9; }
-.dark ::-webkit-scrollbar-track { background: #0F172A; }
-::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
-.dark ::-webkit-scrollbar-thumb { background: #334155; }
-
-.glass-header {
-  background: rgba(255, 255, 255, 0.94);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid #E2E8F0;
+/* Motive: xamfrà (colțul teșit al Eixample-ului) și panot (placa cu floare de pe trotuarele Barcelonei) */
+.xamfra { clip-path: polygon(14px 0, calc(100% - 14px) 0, 100% 14px, 100% calc(100% - 14px), calc(100% - 14px) 100%, 14px 100%, 0 calc(100% - 14px), 0 14px); }
+.xamfra-sm { clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 8px, 100% calc(100% - 8px), calc(100% - 8px) 100%, 8px 100%, 0 calc(100% - 8px), 0 8px); }
+.xamfra-tr { clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 0 100%); }
+.panot {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23171716' stroke-opacity='.16' stroke-width='1.2'%3E%3Ccircle cx='20' cy='20' r='3'/%3E%3Cpath d='M20 4c4 5 4 9 0 13-4-4-4-8 0-13zM36 20c-5 4-9 4-13 0 4-4 8-4 13 0zM20 36c-4-5-4-9 0-13 4 4 4 8 0 13zM4 20c5-4 9-4 13 0-4 4-8 4-13 0z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 40px 40px;
 }
-.dark .glass-header {
-  background: rgba(15, 23, 42, 0.94);
-  border-bottom: 1px solid #1E293B;
-}
+.dark .panot { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23EFECE4' stroke-opacity='.12' stroke-width='1.2'%3E%3Ccircle cx='20' cy='20' r='3'/%3E%3Cpath d='M20 4c4 5 4 9 0 13-4-4-4-8 0-13zM36 20c-5 4-9 4-13 0 4-4 8-4 13 0zM20 36c-4-5-4-9 0-13 4 4 4 8 0 13zM4 20c5-4 9-4 13 0-4 4-8 4-13 0z'/%3E%3C/g%3E%3C/svg%3E"); }
 
-.timeline-line::before {
-  content: '';
-  position: absolute;
-  top: 24px;
-  bottom: 24px;
-  left: 15px;
-  width: 3px;
-  background: linear-gradient(to bottom, #EC4899, #8B5CF6, #0EA5E9);
-  border-radius: 2px;
-  z-index: 0;
-}
+.font-display { font-stretch: 110%; letter-spacing: -0.01em; }
+.eyebrow { font-family: Archivo, system-ui, sans-serif; font-stretch: 105%; text-transform: uppercase; letter-spacing: .12em; font-weight: 800; font-size: 10px; }
+.hairline { box-shadow: 0 0 0 1px rgba(23,23,22,.14); }
+.dark .hairline { box-shadow: 0 0 0 1px rgba(239,236,228,.16); }
 
-.btn-primary-action { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-.btn-primary-action:hover { transform: translateY(-1px); box-shadow: 0 6px 20px -4px rgba(139, 92, 246, 0.35); }
-.btn-primary-action:active { transform: translateY(0); }
+/* Linia cronologică, ca un traseu de semnalizare */
+.timeline-line::before { content: ''; position: absolute; top: 20px; bottom: 20px; left: 17px; width: 2px; background: repeating-linear-gradient(to bottom, #171716 0 6px, transparent 6px 12px); opacity: .35; }
+.dark .timeline-line::before { background: repeating-linear-gradient(to bottom, #EFECE4 0 6px, transparent 6px 12px); }
 
-/* Toast */
+.btn { transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease; }
+.btn:active { transform: translateY(1px); }
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #1B49B8; outline-offset: 2px; }
+
 #toast { transition: opacity .25s ease, transform .25s ease; }
-#toast.hidden-toast { opacity: 0; transform: translateY(12px); pointer-events: none; }
+#toast.hidden-toast { opacity: 0; transform: translate(-50%, 12px); pointer-events: none; }
 
-/* Safe area on iPhone */
-body { padding-bottom: calc(6rem + env(safe-area-inset-bottom)); }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #D9D4C7; }
+.dark ::-webkit-scrollbar-thumb { background: #3D3D39; }
+
+body { padding-bottom: calc(6.5rem + env(safe-area-inset-bottom)); }
+details > summary::-webkit-details-marker { display: none; }
+
+/* Harta (Leaflet) */
+#map { min-height: 52vh; background: #E6E2D8; }
+.dark #map { background: #232321; filter: none; }
+.dark .leaflet-tile { filter: invert(1) hue-rotate(180deg) brightness(.85) contrast(.9); }
+.pin { width: 30px; height: 30px; display: grid; place-items: center; font: 800 12px Archivo, system-ui, sans-serif; color: #fff; background: #1B49B8; clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px); box-shadow: 0 2px 8px rgba(0,0,0,.3); }
+.pin.done { background: #1F7A5C; } .pin.alt { background: #E8B52E; color: #171716; width: 22px; height: 22px; font-size: 10px; } .pin.custom { background: #D7301F; }
+.me { width: 18px; height: 18px; border-radius: 50%; background: #1B49B8; border: 3px solid #fff; box-shadow: 0 0 0 6px rgba(27,73,184,.25); }
+.leaflet-container { font-family: "Instrument Sans", system-ui, sans-serif; }
+.leaflet-popup-content-wrapper { border-radius: 4px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

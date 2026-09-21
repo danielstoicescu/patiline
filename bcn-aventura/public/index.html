@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ro" class="light scroll-smooth">
+<html lang="ro" class="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Barcelona Aventura: Mara (13), Anne & Daniel</title>
-  <meta name="description" content="Ghidul nostru interactiv de vacanță: PortAventura, Ferrari Land și Barcelona, 4–9 noiembrie." />
-  <meta name="theme-color" content="#8B5CF6" />
+  <title>Barcelona Aventura</title>
+  <meta name="description" content="Ghidul nostru de vacanță: PortAventura și Barcelona, 4–9 noiembrie. Mara, Anne & Daniel." />
+  <meta name="theme-color" content="#EFECE4" />
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/icon-192.png" />
@@ -13,385 +13,268 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="BCN Aventura" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..900&family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css">
+  <link rel="stylesheet" href="/vendor/leaflet/leaflet.css">
   <link rel="stylesheet" href="/styles.css">
-
   <script>
-    // Tema se aplică înainte de randare ca să nu clipească pagina.
-    try {
-      if (localStorage.getItem('bcn_theme') === 'dark') {
-        document.documentElement.classList.replace('light', 'dark');
-      }
-    } catch (e) {}
+    try { if (localStorage.getItem('bcn_theme') === 'dark' || (!localStorage.getItem('bcn_theme') && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.replace('light', 'dark'); } catch (e) {}
   </script>
 </head>
 
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans min-h-screen selection:bg-maraPink selection:text-white transition-colors duration-200">
+<body class="bg-calc dark:bg-carbo text-ink dark:text-calc font-sans min-h-screen selection:bg-ocre selection:text-ink transition-colors duration-200">
 
-  <header class="sticky top-0 z-40 glass-header px-4 lg:px-8 py-3 shadow-sm">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-      <div class="flex items-center gap-3 min-w-0">
-        <div class="w-11 h-11 shrink-0 rounded-2xl bg-gradient-to-tr from-ferrari via-maraPink to-maraPurple flex items-center justify-center text-white font-display font-extrabold text-xl shadow-md">13</div>
-        <div class="min-w-0">
-          <div class="flex items-center gap-2 flex-wrap">
-            <h1 class="font-display font-extrabold text-lg md:text-xl text-slate-900 dark:text-white tracking-tight whitespace-nowrap">
-              BARCELONA <span class="text-transparent bg-clip-text bg-gradient-to-r from-maraPink to-maraPurple">AVENTURA</span>
-            </h1>
-            <span class="hidden sm:inline px-2 py-0.5 rounded-full bg-maraPink/10 text-maraPink text-[11px] font-bold border border-maraPink/20">Mara, Anne & Daniel</span>
-          </div>
-          <p class="text-xs text-slate-500 dark:text-slate-400 font-medium flex items-center gap-1.5 mt-0.5">
-            <i class="fa-solid fa-calendar-day text-maraPurple text-[10px]"></i> 4 – 9 Noiembrie • Baza: Poblenou (Bac de Roda)
-          </p>
-        </div>
+  <!-- Top app bar -->
+  <header class="sticky top-0 z-40 bg-calc/92 dark:bg-carbo/92 backdrop-blur border-b border-ink/10 dark:border-calc/10 px-4 py-2.5">
+    <div class="max-w-5xl mx-auto flex items-center gap-3">
+      <div class="w-11 h-11 shrink-0 xamfra-sm bg-vermell text-calc font-display font-black text-lg grid place-items-center">13</div>
+      <div class="min-w-0 flex-1">
+        <h1 class="font-display font-black text-[17px] leading-none tracking-tight uppercase">Barcelona <span class="text-vermell">Aventura</span></h1>
+        <p class="eyebrow text-ink-3 dark:text-calc-3 mt-1 truncate">Mara · Anne · Daniel · 4–9 nov</p>
       </div>
-
-      <div class="flex items-center gap-2 text-xs md:text-sm shrink-0">
-        <button data-action="install" id="installBtn" class="hidden btn-primary-action px-3 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold items-center gap-2 shadow-btn" title="Instalează pe telefon">
-          <i class="fa-solid fa-download text-sm"></i><span class="hidden md:inline">Instalează</span>
-        </button>
-        <button data-action="share" class="btn-primary-action px-3 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center gap-2 shadow-btn" title="Trimite Marei & Annei">
-          <i class="fa-solid fa-share-nodes text-sm"></i>
-          <span class="hidden md:inline">Trimite Marei & Annei</span>
-        </button>
-        <button data-action="open-add" class="btn-primary-action px-3 py-2.5 rounded-xl bg-gradient-to-r from-maraPurple to-indigo-600 text-white font-bold flex items-center gap-1.5 shadow-btn" title="Adaugă o locație">
-          <i class="fa-solid fa-plus-circle"></i>
-          <span class="hidden md:inline">Adaugă locație</span>
-        </button>
-        <button data-action="toggle-theme" id="themeBtn" class="p-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-300 dark:hover:bg-slate-700 transition flex items-center justify-center border border-slate-300 dark:border-slate-700" title="Schimbă modul Light / Dark">
-          <i id="themeIcon" class="fa-solid fa-moon text-indigo-600 text-base"></i>
-        </button>
-      </div>
+      <span id="syncStatus" class="hidden sm:inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-[11px] font-semibold bg-calc-2 dark:bg-carbo-3 text-ink-2 dark:text-calc-2"><i class="fa-solid fa-circle-notch fa-spin"></i> Se conectează…</span>
+      <button data-action="share" class="btn w-12 h-12 rounded-full grid place-items-center text-ink dark:text-calc hover:bg-calc-2 dark:hover:bg-carbo-3" aria-label="Trimite Marei & Annei" title="Trimite Marei & Annei"><i class="fa-solid fa-share-nodes text-lg"></i></button>
+      <button data-action="toggle-theme" class="btn w-12 h-12 rounded-full grid place-items-center text-ink dark:text-calc hover:bg-calc-2 dark:hover:bg-carbo-3" aria-label="Schimbă tema"><i id="themeIcon" class="fa-solid fa-moon text-lg"></i></button>
     </div>
   </header>
 
-  <!-- Banner radar (apare când sunteți lângă un loc) -->
-  <div id="radarBanner" class="hidden sticky top-[64px] z-30 px-4 md:px-8 pt-3">
-    <div class="max-w-7xl mx-auto bg-gradient-to-r from-maraPink to-maraPurple text-white rounded-2xl p-3.5 shadow-xl flex items-center gap-3">
-      <div class="w-10 h-10 shrink-0 rounded-xl bg-white/20 flex items-center justify-center text-xl"><i class="fa-solid fa-location-crosshairs fa-beat"></i></div>
+  <!-- Banner radar -->
+  <div id="radarBanner" class="hidden sticky top-[66px] z-30 px-4 pt-3">
+    <div class="max-w-5xl mx-auto xamfra bg-blau text-calc p-3.5 shadow-lift flex items-center gap-3">
+      <div class="w-11 h-11 shrink-0 bg-calc/15 grid place-items-center text-xl"><i class="fa-solid fa-location-crosshairs fa-beat"></i></div>
       <div class="min-w-0 flex-1">
-        <div class="text-[11px] font-bold uppercase tracking-wide opacity-90">Sunteți aproape!</div>
-        <div id="radarBannerTitle" class="font-display font-bold text-sm md:text-base leading-snug truncate">…</div>
-        <div id="radarBannerMeta" class="text-xs opacity-90">…</div>
+        <div class="eyebrow opacity-80">Sunteți aproape</div>
+        <div id="radarBannerTitle" class="font-display font-bold text-[15px] leading-snug truncate">…</div>
+        <div id="radarBannerMeta" class="text-xs opacity-90 truncate">…</div>
       </div>
-      <a id="radarBannerNav" href="#" target="_blank" rel="noopener" class="shrink-0 px-3 py-2 rounded-xl bg-white text-maraPurple font-bold text-xs shadow"><i class="fa-solid fa-person-walking"></i> Navighează</a>
-      <button data-action="close-banner" class="shrink-0 w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center" aria-label="Închide"><i class="fa-solid fa-xmark"></i></button>
+      <a id="radarBannerNav" href="#" target="_blank" rel="noopener" class="btn shrink-0 h-11 px-4 rounded-full bg-calc text-blau font-bold text-xs grid place-items-center"><span><i class="fa-solid fa-person-walking"></i> Navighează</span></a>
+      <button data-action="close-banner" class="shrink-0 w-11 h-11 rounded-full hover:bg-calc/15 grid place-items-center" aria-label="Închide"><i class="fa-solid fa-xmark"></i></button>
     </div>
   </div>
 
-  <section class="relative overflow-hidden py-6 md:py-8 px-4 md:px-8 max-w-7xl mx-auto">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+  <!-- ===================== PLAN ===================== -->
+  <section id="view-plan" data-view="plan" class="max-w-5xl mx-auto px-4 pt-4 space-y-4">
 
-      <div class="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 md:p-8 rounded-3xl shadow-sm flex flex-col justify-between relative overflow-hidden">
-        <div class="absolute -top-16 -right-16 w-64 h-64 bg-maraPink/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -bottom-16 -left-16 w-64 h-64 bg-bcnTeal/10 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div class="relative z-10 space-y-4">
-          <div class="flex flex-wrap items-center gap-2">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pink-50 dark:bg-pink-950/50 border border-pink-200 dark:border-pink-800 text-xs font-bold text-maraPink">
-              <i class="fa-solid fa-cake-candles"></i>
-              <span id="countdown">Mara turns 13 🎉</span>
-            </div>
-            <span id="syncStatus" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold border bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500">
-              <i class="fa-solid fa-circle-notch fa-spin"></i> Se conectează…
-            </span>
-          </div>
-
-          <h2 class="font-display font-extrabold text-2xl md:text-4xl text-slate-900 dark:text-white leading-tight">
-            PortAventura & Barcelona <br/>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-ferrari via-maraPink to-bcnTeal">Ghidul Nostru de Vacanță</span>
-          </h2>
-
-          <p class="text-slate-600 dark:text-slate-300 text-xs md:text-sm leading-relaxed">
-            Primele 2 zile la <strong>Ferrari Land & PortAventura</strong>, urmate de 3.5 zile în Barcelona pentru Mara, Anne & Daniel! Baza noastră: <strong>Poblenou (Bac de Roda)</strong>. Pho vietnamez gourmet, churros clasici din 1968, toboganul <strong>Sephora El Triangle</strong>, matcha ceremonial la <strong>SAISEI</strong>, serigrafie în Gràcia, intrare moka la Design Museum & montaditos legendari la <strong>Quimet & Quimet</strong>!
-          </p>
-
-          <!-- Vreme (Open-Meteo, fără cheie) -->
-          <div id="weatherStrip" class="hidden gap-2 overflow-x-auto pb-1 -mx-1 px-1"></div>
-
-          <div class="bg-slate-50 dark:bg-slate-800/80 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700/80 shadow-inner mt-2">
-            <label for="heroSearchQuery" class="text-xs font-bold text-slate-700 dark:text-slate-200 mb-1.5 flex items-center justify-between">
-              <span class="flex items-center gap-1.5"><i class="fa-solid fa-magnifying-glass-location text-maraPurple"></i> Caută un loc și adaugă-l în program:</span>
-            </label>
-            <form data-action="hero-search" class="flex items-center gap-2">
-              <input type="text" id="heroSearchQuery" placeholder="Ex: Satan's Coffee / El 58 Poblenou…" class="flex-1 min-w-0 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs md:text-sm text-slate-900 dark:text-white focus:outline-none focus:border-maraPurple">
-              <button type="submit" class="btn-primary-action px-4 py-2 rounded-xl bg-maraPurple text-white font-bold text-xs md:text-sm hover:opacity-95 flex items-center gap-1.5 whitespace-nowrap shadow-md">
-                <i class="fa-solid fa-bolt"></i> Caută
-              </button>
-            </form>
-          </div>
+    <!-- Hero -->
+    <div class="xamfra panot bg-calc-2 dark:bg-carbo-2 p-5 md:p-7 relative overflow-hidden">
+      <div class="relative">
+        <div class="flex flex-wrap items-center gap-2 mb-3">
+          <span id="countdown" class="inline-flex items-center gap-2 h-8 px-3 rounded-full bg-ocre text-ink text-xs font-bold"><i class="fa-solid fa-cake-candles"></i> Mara turns 13</span>
+          <span id="syncStatusMobile" class="sm:hidden inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-[11px] font-semibold bg-calc dark:bg-carbo-3 text-ink-2 dark:text-calc-2"></span>
         </div>
-
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 relative z-10">
-          <div class="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl text-center border border-slate-100 dark:border-slate-800">
-            <span class="text-[10px] text-slate-400 block font-semibold uppercase">Joi - Vineri</span>
-            <span class="font-display font-bold text-ferrari text-xs md:text-sm">Ferrari Land</span>
-          </div>
-          <div class="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl text-center border border-slate-100 dark:border-slate-800">
-            <span class="text-[10px] text-slate-400 block font-semibold uppercase">Baza BCN</span>
-            <span class="font-display font-bold text-bcnTeal text-xs md:text-sm">Poblenou</span>
-          </div>
-          <div class="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl text-center border border-slate-100 dark:border-slate-800">
-            <span class="text-[10px] text-slate-400 block font-semibold uppercase">Cafea Daniel</span>
-            <span class="font-display font-bold text-amber-500 text-xs md:text-sm">4+ Espressos/zi</span>
-          </div>
-          <div class="bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-xl text-center border border-slate-100 dark:border-slate-800">
-            <span class="text-[10px] text-slate-400 block font-semibold uppercase">Highlights Mara</span>
-            <span class="font-display font-bold text-maraPink text-xs md:text-sm">Sweets & Slide</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="lg:col-span-5 flex flex-col gap-4">
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 md:p-6 rounded-3xl shadow-sm space-y-4">
-          <div>
-            <div class="flex items-center justify-between mb-3 gap-2">
-              <h3 class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
-                <i class="fa-solid fa-mug-hot text-amber-500"></i>
-                <span>Daniel's Coffee Counter</span>
-              </h3>
-              <span class="text-[10px] px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-extrabold border border-amber-500/20 whitespace-nowrap">4+ / zi</span>
-            </div>
-            <div class="bg-amber-500/5 dark:bg-amber-500/10 p-3 rounded-2xl border border-amber-500/20 flex items-center justify-between gap-2">
-              <div class="flex items-center gap-3 min-w-0">
-                <div class="w-10 h-10 shrink-0 rounded-xl bg-amber-500 text-white flex items-center justify-center text-lg shadow-md"><i class="fa-solid fa-coffee"></i></div>
-                <div class="min-w-0">
-                  <span class="text-[11px] text-slate-500 dark:text-slate-400 block font-medium">Espressos băute pe trip</span>
-                  <span id="coffeeCountDisplay" class="font-display font-bold text-base text-amber-700 dark:text-amber-300">0 / 20 Espressos BCN</span>
-                </div>
-              </div>
-              <div class="flex items-center gap-1.5 shrink-0">
-                <button data-action="coffee" data-delta="-1" class="w-10 h-10 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 text-slate-700 dark:text-slate-300 flex items-center justify-center text-base font-bold border border-slate-200 dark:border-slate-700 shadow-sm transition" aria-label="Scade">−</button>
-                <button data-action="coffee" data-delta="1" class="w-10 h-10 rounded-lg bg-amber-500 hover:bg-amber-600 text-white flex items-center justify-center text-base font-bold shadow-md transition" aria-label="Adaugă">+</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="space-y-2 text-xs">
-            <div class="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider text-[10px] flex items-center justify-between">
-              <span>Mara's Birthday Quest Log</span>
-              <span class="text-maraPink"><i class="fa-solid fa-wand-magic-sparkles"></i> 13th Special</span>
-            </div>
-            <div class="space-y-1.5" id="questList">
-              <label class="flex items-center gap-2.5 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition border border-slate-100 dark:border-slate-800">
-                <input type="checkbox" class="quest-check rounded border-slate-300 dark:border-slate-700 accent-pink-500 w-5 h-5" data-quest="sephora">
-                <span class="text-slate-700 dark:text-slate-200">Toboganul de la <strong>Sephora El Triangle</strong></span>
-              </label>
-              <label class="flex items-center gap-2.5 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition border border-slate-100 dark:border-slate-800">
-                <input type="checkbox" class="quest-check rounded border-slate-300 dark:border-slate-700 accent-pink-500 w-5 h-5" data-quest="churros">
-                <span class="text-slate-700 dark:text-slate-200">Churros clasici 1968 la <strong>Xurrería San Roman</strong></span>
-              </label>
-              <label class="flex items-center gap-2.5 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition border border-slate-100 dark:border-slate-800">
-                <input type="checkbox" class="quest-check rounded border-slate-300 dark:border-slate-700 accent-pink-500 w-5 h-5" data-quest="matcha">
-                <span class="text-slate-700 dark:text-slate-200">Matcha ceremonial bătut cu pămătuf la <strong>SAISEI</strong></span>
-              </label>
-              <label class="flex items-center gap-2.5 bg-slate-50 dark:bg-slate-800/60 p-2.5 rounded-xl cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition border border-slate-100 dark:border-slate-800">
-                <input type="checkbox" class="quest-check rounded border-slate-300 dark:border-slate-700 accent-pink-500 w-5 h-5" data-quest="quimet">
-                <span class="text-slate-700 dark:text-slate-200">Montaditos cu trufe la <strong>Quimet & Quimet</strong></span>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        <!-- Notițe comune + info utile -->
-        <details class="group bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm open:pb-5">
-          <summary class="list-none cursor-pointer p-5 flex items-center justify-between gap-2">
-            <span class="font-display font-bold text-base text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-note-sticky text-bcnTeal"></i> Notițe comune & info utile</span>
-            <i class="fa-solid fa-chevron-down text-slate-400 transition group-open:rotate-180"></i>
-          </summary>
-          <div class="px-5 space-y-3">
-            <p class="text-[11px] text-slate-500">Adresa exactă, codul de la ușă, wifi, numere de rezervare… Se sincronizează la toți trei.</p>
-            <textarea id="sharedNotes" rows="4" maxlength="2000" placeholder="Ex: Cazare: Carrer de Bac de Roda nr. …, et. 3, cod ușă 1234. Wifi: …" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-bcnTeal"></textarea>
-            <div class="flex items-center justify-between text-[11px] text-slate-400"><span id="notesStatus">&nbsp;</span></div>
-            <div class="grid grid-cols-2 gap-2 text-xs">
-              <a href="tel:112" class="p-3 rounded-2xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 font-bold flex items-center gap-2"><i class="fa-solid fa-phone"></i> Urgențe: 112</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=Carrer+de+Bac+de+Roda+Barcelona" target="_blank" rel="noopener" class="p-3 rounded-2xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 text-sky-700 dark:text-sky-300 font-bold flex items-center gap-2"><i class="fa-solid fa-house"></i> Spre cazare</a>
-              <a href="https://www.google.com/maps/search/?api=1&query=farmacia+Poblenou+Barcelona" target="_blank" rel="noopener" class="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 font-bold flex items-center gap-2"><i class="fa-solid fa-prescription-bottle-medical"></i> Farmacie aproape</a>
-              <a href="https://www.tmb.cat/en/barcelona/metro" target="_blank" rel="noopener" class="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 font-bold flex items-center gap-2"><i class="fa-solid fa-train-subway"></i> Metrou (L4 galbenă)</a>
-            </div>
-          </div>
-        </details>
+        <h2 class="font-display font-black text-3xl md:text-5xl leading-[0.95] uppercase tracking-tight" style="text-wrap:balance">PortAventura<br/><span class="text-blau">&</span> Barcelona</h2>
+        <p class="mt-3 text-sm text-ink-2 dark:text-calc-2 max-w-prose">Joi 5: rollercoastere. Vineri: baza în Poblenou, pho și tapas. Sâmbătă: churros din 1968, toboganul Sephora, MNAC gratis, pinchos pe Blai. Duminică: Sagrada, matcha, Design Museum gratis, apus la Bunkers. Luni: Encants, la bomba, Quimet & Quimet.</p>
+        <div id="weatherStrip" class="hidden gap-2 overflow-x-auto pt-4 -mx-1 px-1"></div>
       </div>
     </div>
-  </section>
 
-  <!-- Radar / Lângă mine -->
-  <section class="max-w-7xl mx-auto px-4 md:px-8 mb-4">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-sm p-4 md:p-5">
-      <div class="flex items-center justify-between gap-3 flex-wrap">
-        <div class="flex items-center gap-3 min-w-0">
-          <div class="w-10 h-10 shrink-0 rounded-xl bg-gradient-to-tr from-maraPink to-maraPurple text-white flex items-center justify-center text-lg shadow-md"><i class="fa-solid fa-location-crosshairs"></i></div>
+    <!-- Contor + quest -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div class="rounded-xl bg-white dark:bg-carbo-2 hairline p-4">
+        <div class="flex items-center justify-between gap-3">
           <div class="min-w-0">
-            <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Radar: lângă mine</h3>
-            <p id="radarStatus" class="text-[11px] text-slate-500">Pornește radarul ca să primiți o alertă când vă apropiați de un loc din program.</p>
+            <div class="eyebrow text-ink-3 dark:text-calc-3">Daniel's coffee counter</div>
+            <div id="coffeeCountDisplay" class="font-display font-black text-2xl mt-1 tabular-nums">0 / 20</div>
+            <div class="text-[11px] text-ink-3">espresso pe trip · ținta: 4+/zi</div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button data-action="coffee" data-delta="-1" class="btn w-12 h-12 rounded-full hairline bg-calc dark:bg-carbo-3 grid place-items-center text-lg font-bold" aria-label="Scade">−</button>
+            <button data-action="coffee" data-delta="1" class="btn w-12 h-12 rounded-full bg-ocre text-ink grid place-items-center text-lg font-bold shadow-lift" aria-label="Adaugă"><i class="fa-solid fa-mug-hot"></i></button>
           </div>
         </div>
-        <button data-action="toggle-radar" id="radarBtn" class="btn-primary-action px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs flex items-center gap-2 shadow-btn">
-          <i class="fa-solid fa-satellite-dish"></i> <span>Pornește radarul</span>
-        </button>
       </div>
-      <div id="nearbyList" class="hidden mt-4 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-2"></div>
-      <p id="radarHint" class="hidden mt-3 text-[11px] text-slate-400"><i class="fa-solid fa-circle-info"></i> Alertele merg cât timp aplicația e deschisă pe ecran (un site nu poate urmări locația în fundal). Pozițiile marcate „aprox." le puteți fixa exact cu „Fixează aici” când ajungeți.</p>
+      <div class="rounded-xl bg-white dark:bg-carbo-2 hairline p-4">
+        <div class="eyebrow text-ink-3 dark:text-calc-3 flex items-center justify-between"><span>Mara's birthday quest log</span><span class="text-vermell">13th special</span></div>
+        <div class="mt-2 grid grid-cols-1 gap-1" id="questList">
+          <label class="flex items-center gap-3 min-h-[44px] px-2 rounded-lg hover:bg-calc dark:hover:bg-carbo-3 cursor-pointer text-sm"><input type="checkbox" class="quest-check w-5 h-5 accent-vermell" data-quest="sephora"> Toboganul de la Sephora</label>
+          <label class="flex items-center gap-3 min-h-[44px] px-2 rounded-lg hover:bg-calc dark:hover:bg-carbo-3 cursor-pointer text-sm"><input type="checkbox" class="quest-check w-5 h-5 accent-vermell" data-quest="churros"> Churros din 1968 la San Román</label>
+          <label class="flex items-center gap-3 min-h-[44px] px-2 rounded-lg hover:bg-calc dark:hover:bg-carbo-3 cursor-pointer text-sm"><input type="checkbox" class="quest-check w-5 h-5 accent-vermell" data-quest="matcha"> Matcha ceremonial la SAISEI</label>
+          <label class="flex items-center gap-3 min-h-[44px] px-2 rounded-lg hover:bg-calc dark:hover:bg-carbo-3 cursor-pointer text-sm"><input type="checkbox" class="quest-check w-5 h-5 accent-vermell" data-quest="quimet"> Montaditos la Quimet & Quimet</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zile (chips, sticky sub app bar) -->
+    <div class="sticky top-[66px] z-20 -mx-4 px-4 py-2 bg-calc/95 dark:bg-carbo/95 backdrop-blur">
+      <div class="flex gap-2 overflow-x-auto pb-1 -mb-1" id="dayTabs">
+        <button data-action="day" data-day="thu" id="tab-thu" class="day-tab btn shrink-0 h-12 px-4 rounded-full hairline bg-white dark:bg-carbo-2 text-left"><span class="eyebrow block">Joi 5</span><span class="text-xs font-semibold">PortAventura</span></button>
+        <button data-action="day" data-day="fri" id="tab-fri" class="day-tab btn shrink-0 h-12 px-4 rounded-full hairline bg-white dark:bg-carbo-2 text-left"><span class="eyebrow block">Vin 6</span><span class="text-xs font-semibold">Poblenou</span></button>
+        <button data-action="day" data-day="sat" id="tab-sat" class="day-tab btn shrink-0 h-12 px-4 rounded-full hairline bg-white dark:bg-carbo-2 text-left"><span class="eyebrow block">Sâm 7</span><span class="text-xs font-semibold">Gòtic · Blai</span></button>
+        <button data-action="day" data-day="sun" id="tab-sun" class="day-tab btn shrink-0 h-12 px-4 rounded-full hairline bg-white dark:bg-carbo-2 text-left"><span class="eyebrow block">Dum 8</span><span class="text-xs font-semibold">Sagrada · Bunkers</span></button>
+        <button data-action="day" data-day="mon" id="tab-mon" class="day-tab btn shrink-0 h-12 px-4 rounded-full hairline bg-white dark:bg-carbo-2 text-left"><span class="eyebrow block">Lun 9</span><span class="text-xs font-semibold">Encants · Quimet</span></button>
+      </div>
+    </div>
+
+    <!-- Filtre + acțiuni zi -->
+    <div class="flex flex-wrap items-center gap-2">
+      <button data-action="filter" data-cat="all" class="cat-btn btn h-10 px-4 rounded-full hairline text-xs font-semibold bg-white dark:bg-carbo-2">Toate</button>
+      <button data-action="filter" data-cat="mara" class="cat-btn btn h-10 px-4 rounded-full hairline text-xs font-semibold bg-white dark:bg-carbo-2"><i class="fa-solid fa-wand-magic-sparkles text-vermell"></i> Mara</button>
+      <button data-action="filter" data-cat="coffee" class="cat-btn btn h-10 px-4 rounded-full hairline text-xs font-semibold bg-white dark:bg-carbo-2"><i class="fa-solid fa-mug-hot text-ocre-dark"></i> Cafea & bere</button>
+      <button data-action="filter" data-cat="food" class="cat-btn btn h-10 px-4 rounded-full hairline text-xs font-semibold bg-white dark:bg-carbo-2"><i class="fa-solid fa-utensils text-verd"></i> Mâncare</button>
+      <button data-action="filter" data-cat="art" class="cat-btn btn h-10 px-4 rounded-full hairline text-xs font-semibold bg-white dark:bg-carbo-2"><i class="fa-solid fa-palette text-blau"></i> Artă & vederi</button>
+      <span class="flex-1"></span>
+      <button data-action="day-route" class="btn h-10 px-4 rounded-full bg-blau text-calc text-xs font-bold inline-flex items-center gap-2 shadow-lift"><i class="fa-solid fa-route"></i> Ziua în Google Maps</button>
+    </div>
+
+    <div id="itinerary-container" class="space-y-4"></div>
+  </section>
+
+  <!-- ===================== EXPLORARE ===================== -->
+  <section id="view-explore" data-view="explore" class="hidden max-w-5xl mx-auto px-4 pt-4 space-y-3">
+    <div class="flex items-center justify-between gap-2 flex-wrap">
+      <div>
+        <div class="eyebrow text-ink-3 dark:text-calc-3">Explorare</div>
+        <h2 class="font-display font-black text-2xl uppercase leading-none" id="exploreTitle">Azi</h2>
+      </div>
+      <div class="flex items-center gap-2">
+        <button data-action="locate" class="btn h-11 px-4 rounded-full hairline bg-white dark:bg-carbo-2 text-xs font-bold inline-flex items-center gap-2"><i class="fa-solid fa-location-crosshairs text-blau"></i> Unde sunt</button>
+        <button data-action="day-route" class="btn h-11 px-4 rounded-full bg-blau text-calc text-xs font-bold inline-flex items-center gap-2 shadow-lift"><i class="fa-brands fa-google"></i> Traseul zilei</button>
+      </div>
+    </div>
+    <div class="flex gap-2 overflow-x-auto pb-1" id="exploreDays">
+      <button data-action="day" data-day="thu" class="explore-day btn shrink-0 h-10 px-4 rounded-full hairline bg-white dark:bg-carbo-2 text-xs font-bold">Joi 5</button>
+      <button data-action="day" data-day="fri" class="explore-day btn shrink-0 h-10 px-4 rounded-full hairline bg-white dark:bg-carbo-2 text-xs font-bold">Vin 6</button>
+      <button data-action="day" data-day="sat" class="explore-day btn shrink-0 h-10 px-4 rounded-full hairline bg-white dark:bg-carbo-2 text-xs font-bold">Sâm 7</button>
+      <button data-action="day" data-day="sun" class="explore-day btn shrink-0 h-10 px-4 rounded-full hairline bg-white dark:bg-carbo-2 text-xs font-bold">Dum 8</button>
+      <button data-action="day" data-day="mon" class="explore-day btn shrink-0 h-10 px-4 rounded-full hairline bg-white dark:bg-carbo-2 text-xs font-bold">Lun 9</button>
+    </div>
+    <div class="xamfra overflow-hidden hairline"><div id="map" role="application" aria-label="Harta zilei"></div></div>
+    <p id="radarStatus" class="text-[11px] text-ink-3 dark:text-calc-3 px-1"><i class="fa-solid fa-circle-info"></i> Radarul pornește automat în Explorare și dă alertă la ~150 m de un loc din program, cât timp aplicația e deschisă pe ecran.</p>
+
+    <div id="nextStop" class="hidden"></div>
+
+    <div>
+      <div class="eyebrow text-ink-3 dark:text-calc-3 mb-2">Lângă mine</div>
+      <div id="nearbyList" class="grid grid-cols-1 md:grid-cols-2 gap-2"></div>
     </div>
   </section>
 
-  <section class="max-w-7xl mx-auto px-4 md:px-8 my-4">
-    <div class="flex flex-wrap items-center justify-between gap-3 mb-6 bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-      <div class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
-        <i class="fa-solid fa-sliders text-maraPurple"></i>
-        <span>Filtrează pasiuni:</span>
-      </div>
-      <div class="flex flex-wrap items-center gap-2 text-xs">
-        <button data-action="filter" data-cat="all" class="cat-btn px-3.5 py-2 rounded-xl font-bold transition shadow-sm border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">Toate</button>
-        <button data-action="filter" data-cat="mara" class="cat-btn px-3.5 py-2 rounded-xl bg-pink-50 dark:bg-pink-950/40 text-maraPink border border-pink-200 dark:border-pink-800 font-bold hover:bg-pink-100 transition">✨ Mara</button>
-        <button data-action="filter" data-cat="coffee" class="cat-btn px-3.5 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800 font-bold hover:bg-amber-100 transition">☕ Cafea & Bere</button>
-        <button data-action="filter" data-cat="food" class="cat-btn px-3.5 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 font-bold hover:bg-emerald-100 transition">🍲 Mâncare</button>
-        <button data-action="filter" data-cat="art" class="cat-btn px-3.5 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800 font-bold hover:bg-sky-100 transition">🖼️ Artă & Vederi</button>
-      </div>
+  <!-- ===================== INFO ===================== -->
+  <section id="view-info" data-view="info" class="hidden max-w-5xl mx-auto px-4 pt-4 space-y-4">
+    <div>
+      <div class="eyebrow text-ink-3 dark:text-calc-3">Info</div>
+      <h2 class="font-display font-black text-2xl uppercase leading-none">Notițe & utile</h2>
     </div>
-
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5" id="dayTabs">
-      <button data-action="day" data-day="thu" id="tab-thu" class="day-tab p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-left transition hover:border-ferrari shadow-sm">
-        <div class="text-[10px] font-extrabold text-ferrari uppercase tracking-wide">Joi 5 nov (Z1)</div>
-        <div class="font-display font-bold text-sm text-slate-900 dark:text-white flex items-center justify-between mt-1"><span>PortAventura</span><i class="fa-solid fa-bolt text-ferrari text-xs"></i></div>
-      </button>
-      <button data-action="day" data-day="fri" id="tab-fri" class="day-tab p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-left transition hover:border-maraPink shadow-sm">
-        <div class="text-[10px] font-extrabold text-maraPink uppercase tracking-wide">Vineri 6 nov (Z2)</div>
-        <div class="font-display font-bold text-sm text-slate-900 dark:text-white flex items-center justify-between mt-1"><span>Poblenou & Pho</span><i class="fa-solid fa-utensils text-maraPink text-xs"></i></div>
-      </button>
-      <button data-action="day" data-day="sat" id="tab-sat" class="day-tab p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-left transition hover:border-amber-500 shadow-sm">
-        <div class="text-[10px] font-extrabold text-amber-500 uppercase tracking-wide">Sâmbătă 7 nov (Z3)</div>
-        <div class="font-display font-bold text-sm text-slate-900 dark:text-white flex items-center justify-between mt-1"><span>Gòtic, Sephora, Blai</span><i class="fa-solid fa-bag-shopping text-amber-500 text-xs"></i></div>
-      </button>
-      <button data-action="day" data-day="sun" id="tab-sun" class="day-tab p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-left transition hover:border-emerald-500 shadow-sm">
-        <div class="text-[10px] font-extrabold text-emerald-500 uppercase tracking-wide">Duminică 8 nov (Z4)</div>
-        <div class="font-display font-bold text-sm text-slate-900 dark:text-white flex items-center justify-between mt-1"><span>SAISEI & Design Museum</span><i class="fa-solid fa-camera text-emerald-500 text-xs"></i></div>
-      </button>
-      <button data-action="day" data-day="mon" id="tab-mon" class="day-tab p-3.5 rounded-2xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-left transition hover:border-bcnTeal shadow-sm">
-        <div class="text-[10px] font-extrabold text-bcnTeal uppercase tracking-wide">Luni 9 nov (Z5)</div>
-        <div class="font-display font-bold text-sm text-slate-900 dark:text-white flex items-center justify-between mt-1"><span>Quimet & Encants</span><i class="fa-solid fa-compass text-bcnTeal text-xs"></i></div>
-      </button>
+    <div class="rounded-xl bg-white dark:bg-carbo-2 hairline p-4 space-y-2">
+      <label for="sharedNotes" class="eyebrow text-ink-3 dark:text-calc-3">Notițe comune (adresă, cod ușă, wifi, rezervări)</label>
+      <textarea id="sharedNotes" rows="5" maxlength="2000" placeholder="Ex: Cazare: Carrer de Bac de Roda nr. …, et. 3, cod ușă 1234. Wifi: … Rezervare Bar del Pla sâmbătă 14:00." class="w-full bg-calc dark:bg-carbo-3 rounded-lg px-3.5 py-3 text-sm focus:outline-none"></textarea>
+      <div id="notesStatus" class="text-[11px] text-ink-3">&nbsp;</div>
+    </div>
+    <div class="grid grid-cols-2 gap-2 text-sm">
+      <a href="tel:112" class="btn min-h-[56px] rounded-xl bg-vermell-soft dark:bg-vermell/20 text-vermell-dark dark:text-vermell-soft font-bold px-4 flex items-center gap-3"><i class="fa-solid fa-phone"></i> Urgențe 112</a>
+      <a href="https://www.google.com/maps/search/?api=1&query=Carrer+de+Bac+de+Roda+Barcelona" target="_blank" rel="noopener" class="btn min-h-[56px] rounded-xl bg-blau-soft dark:bg-blau/20 text-blau-dark dark:text-blau-soft font-bold px-4 flex items-center gap-3"><i class="fa-solid fa-house"></i> Spre cazare</a>
+      <a href="https://www.google.com/maps/search/?api=1&query=farmacia+Poblenou+Barcelona" target="_blank" rel="noopener" class="btn min-h-[56px] rounded-xl bg-verd-soft dark:bg-verd/20 text-verd-dark dark:text-verd-soft font-bold px-4 flex items-center gap-3"><i class="fa-solid fa-prescription-bottle-medical"></i> Farmacie</a>
+      <a href="https://www.tmb.cat/en/barcelona/metro" target="_blank" rel="noopener" class="btn min-h-[56px] rounded-xl bg-ocre-soft dark:bg-ocre/20 text-ocre-dark dark:text-ocre-soft font-bold px-4 flex items-center gap-3"><i class="fa-solid fa-train-subway"></i> Metrou</a>
+    </div>
+    <div class="rounded-xl bg-white dark:bg-carbo-2 hairline p-4 space-y-3">
+      <div class="eyebrow text-ink-3 dark:text-calc-3">Trimite ghidul Marei & Annei</div>
+      <div class="flex items-center gap-2">
+        <input id="shareUrl" readonly class="flex-1 min-w-0 bg-calc dark:bg-carbo-3 rounded-lg px-3 h-11 text-xs">
+        <button data-action="copy-link" class="btn h-11 px-4 rounded-full bg-ink dark:bg-calc text-calc dark:text-ink font-bold text-xs">Copiază</button>
+      </div>
+      <a id="whatsappShareBtn" href="#" target="_blank" rel="noopener" class="btn h-12 rounded-full bg-verd text-calc font-bold text-sm flex items-center justify-center gap-2"><i class="fa-brands fa-whatsapp text-lg"></i> Trimite pe WhatsApp</a>
+      <button data-action="copy-summary" class="btn w-full h-11 rounded-full hairline text-xs font-bold">Copiază rezumatul programului</button>
+      <div id="qrBlock" class="text-center pt-1"><img id="qrCodeImg" src="" alt="Cod QR" class="inline-block w-36 h-36 bg-white rounded-lg hairline"></div>
+      <p class="text-[11px] text-ink-3 dark:text-calc-3">Instalare: Android → Chrome → meniu → „Add to Home screen” (apoi apare și în meniul Share din Instagram). iPhone → Safari → Share → „Add to Home Screen”.</p>
+      <button data-action="install" id="installBtn" class="hidden btn w-full h-12 rounded-full bg-blau text-calc font-bold text-sm items-center justify-center gap-2"><i class="fa-solid fa-download"></i> Instalează pe telefon</button>
+    </div>
+    <div class="rounded-xl bg-white dark:bg-carbo-2 hairline p-4 text-xs text-ink-2 dark:text-calc-2 space-y-1">
+      <div class="eyebrow text-ink-3 dark:text-calc-3 mb-1">Cum adaugi un loc dintr-un Reel sau link</div>
+      <p><b>Android:</b> în Instagram / TikTok / Google Maps → Share → <b>BCN Aventura</b>. <b>iPhone:</b> copiază linkul, apoi „+” → „Din link”.</p>
+      <p>Din Google Maps vine și numele locului, cu poziția. Din Instagram vine doar linkul (Instagram nu lasă citirea descrierii fără login), deci scrii tu numele; linkul rămâne atașat pe card.</p>
     </div>
   </section>
 
-  <main class="max-w-7xl mx-auto px-4 md:px-8 pb-10">
-    <div id="itinerary-container" class="space-y-6"></div>
-  </main>
-
-  <!-- Bara de jos: zile la degetul mare -->
-  <nav class="fixed bottom-0 inset-x-0 z-40 glass-header border-t border-slate-200 dark:border-slate-800 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]" aria-label="Zile">
-    <div class="max-w-xl mx-auto grid grid-cols-5 gap-1.5">
-      <button data-action="day" data-day="thu" class="bottom-day rounded-xl py-2 text-center border-2 border-transparent transition" data-color="ferrari"><div class="text-[10px] font-extrabold uppercase text-ferrari">Joi</div><div class="text-[11px] font-bold text-slate-700 dark:text-slate-200">5</div></button>
-      <button data-action="day" data-day="fri" class="bottom-day rounded-xl py-2 text-center border-2 border-transparent transition" data-color="maraPink"><div class="text-[10px] font-extrabold uppercase text-maraPink">Vin</div><div class="text-[11px] font-bold text-slate-700 dark:text-slate-200">6</div></button>
-      <button data-action="day" data-day="sat" class="bottom-day rounded-xl py-2 text-center border-2 border-transparent transition" data-color="amber-500"><div class="text-[10px] font-extrabold uppercase text-amber-500">Sâm</div><div class="text-[11px] font-bold text-slate-700 dark:text-slate-200">7</div></button>
-      <button data-action="day" data-day="sun" class="bottom-day rounded-xl py-2 text-center border-2 border-transparent transition" data-color="emerald-500"><div class="text-[10px] font-extrabold uppercase text-emerald-500">Dum</div><div class="text-[11px] font-bold text-slate-700 dark:text-slate-200">8</div></button>
-      <button data-action="day" data-day="mon" class="bottom-day rounded-xl py-2 text-center border-2 border-transparent transition" data-color="bcnTeal"><div class="text-[10px] font-extrabold uppercase text-bcnTeal">Lun</div><div class="text-[11px] font-bold text-slate-700 dark:text-slate-200">9</div></button>
+  <!-- Bară de navigare (Material 3) -->
+  <nav class="fixed bottom-0 inset-x-0 z-40 bg-calc-2/95 dark:bg-carbo-2/95 backdrop-blur border-t border-ink/10 dark:border-calc/10 pb-[env(safe-area-inset-bottom)]" aria-label="Navigare">
+    <div class="max-w-md mx-auto grid grid-cols-3 h-20">
+      <button data-action="view" data-view="plan" class="nav-btn flex flex-col items-center justify-center gap-1 text-[11px] font-semibold"><span class="nav-pill h-8 w-16 rounded-full grid place-items-center text-lg"><i class="fa-solid fa-calendar-days"></i></span>Plan</button>
+      <button data-action="view" data-view="explore" class="nav-btn flex flex-col items-center justify-center gap-1 text-[11px] font-semibold"><span class="nav-pill h-8 w-16 rounded-full grid place-items-center text-lg"><i class="fa-solid fa-map-location-dot"></i></span>Explorare</button>
+      <button data-action="view" data-view="info" class="nav-btn flex flex-col items-center justify-center gap-1 text-[11px] font-semibold"><span class="nav-pill h-8 w-16 rounded-full grid place-items-center text-lg"><i class="fa-solid fa-circle-info"></i></span>Info</button>
     </div>
   </nav>
 
-  <!-- Share modal -->
-  <div id="shareModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 hidden" data-modal>
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 max-w-lg w-full rounded-3xl p-6 relative shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-      <button data-action="close-modal" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 flex items-center justify-center transition" aria-label="Închide"><i class="fa-solid fa-xmark"></i></button>
-      <div class="flex items-center gap-3">
-        <div class="w-12 h-12 shrink-0 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl"><i class="fa-brands fa-whatsapp"></i></div>
-        <div>
-          <h3 class="font-display font-bold text-lg text-slate-900 dark:text-white">Trimite ghidul Marei & Annei</h3>
-          <p class="text-xs text-slate-500">Deschid linkul pe telefon și văd același program, live.</p>
-        </div>
-      </div>
-      <div class="space-y-3 pt-2">
-        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
-          <span class="text-[11px] font-bold text-slate-500 block mb-1">Linkul aplicației</span>
-          <div class="flex items-center gap-2">
-            <input id="shareUrl" readonly class="flex-1 min-w-0 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white">
-            <button data-action="copy-link" class="px-3 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-xs whitespace-nowrap"><i class="fa-solid fa-copy"></i> Copiază</button>
-          </div>
-        </div>
-        <a id="whatsappShareBtn" href="#" target="_blank" rel="noopener" class="w-full py-3 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm flex items-center justify-between shadow-sm transition">
-          <span class="flex items-center gap-2.5"><i class="fa-brands fa-whatsapp text-xl"></i> Trimite pe WhatsApp</span>
-          <i class="fa-solid fa-arrow-right text-xs"></i>
-        </a>
-        <button data-action="copy-summary" class="w-full py-2.5 px-4 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center justify-between border border-slate-200 dark:border-slate-700 transition">
-          <span class="flex items-center gap-2"><i class="fa-solid fa-list-check text-maraPurple"></i> Copiază rezumatul programului</span>
-          <i class="fa-solid fa-check text-xs text-emerald-500 opacity-0" id="copyCheckIcon"></i>
-        </button>
-        <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 text-center space-y-1.5">
-          <span class="text-[11px] font-bold text-slate-700 dark:text-slate-300 block">Cod QR (scanează cu camera telefonului)</span>
-          <div class="flex justify-center py-1"><img id="qrCodeImg" src="" alt="Cod QR pentru ghid" class="w-36 h-36 rounded-xl border border-slate-200 bg-white shadow-sm"></div>
-        </div>
-        <p class="text-[11px] text-slate-500 px-1">💡 Pe iPhone: Safari → butonul „Share” → <strong>Add to Home Screen</strong>. Pe Android: Chrome → meniu → <strong>Add to Home screen</strong>. Așa apare ca aplicație pe ecran și merge și fără semnal.</p>
-      </div>
-    </div>
-  </div>
+  <!-- FAB -->
+  <button data-action="open-add" class="btn fixed right-4 bottom-[calc(5.75rem+env(safe-area-inset-bottom))] z-40 h-14 px-5 xamfra-sm bg-vermell text-calc font-bold text-sm shadow-lift inline-flex items-center gap-2" aria-label="Adaugă loc"><i class="fa-solid fa-plus text-lg"></i> Adaugă</button>
 
-  <!-- Add location modal -->
-  <div id="addModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4 hidden" data-modal>
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 max-w-xl w-full rounded-3xl p-6 relative max-h-[90vh] overflow-y-auto shadow-2xl">
-      <button data-action="close-modal" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-300 flex items-center justify-center" aria-label="Închide"><i class="fa-solid fa-xmark"></i></button>
-      <h3 class="font-display font-bold text-xl text-slate-900 dark:text-white mb-1 flex items-center gap-2"><i class="fa-solid fa-map-location-dot text-maraPurple"></i> Adaugă o locație în program</h3>
-      <p class="text-xs text-slate-500 mb-4">Se salvează în programul comun și apare instant la toți trei.</p>
-
-      <div class="bg-slate-50 dark:bg-slate-800 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 mb-5">
-        <label for="modalSearchQuery" class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Verifică locul pe Google Maps:</label>
-        <form data-action="modal-search" class="flex gap-2">
-          <input type="text" id="modalSearchQuery" placeholder="Ex: Satan's Coffee / El 58 Poblenou…" class="flex-1 min-w-0 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-maraPurple">
-          <button type="submit" class="btn-primary-action px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1 whitespace-nowrap"><i class="fa-solid fa-map"></i> Maps</button>
-        </form>
+  <!-- Bottom sheet: adăugare / editare -->
+  <div id="addModal" class="fixed inset-0 z-50 bg-ink/50 backdrop-blur-sm hidden" data-modal>
+    <div class="absolute inset-x-0 bottom-0 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-[640px] max-h-[92vh] overflow-y-auto bg-calc dark:bg-carbo-2 rounded-t-3xl md:rounded-2xl p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
+      <div class="mx-auto w-10 h-1.5 rounded-full bg-ink/20 dark:bg-calc/20 mb-4 md:hidden"></div>
+      <div class="flex items-start justify-between gap-3">
+        <div><div class="eyebrow text-ink-3 dark:text-calc-3">Program comun</div><h3 id="addTitle" class="font-display font-black text-xl uppercase leading-none">Adaugă un loc</h3></div>
+        <button data-action="close-modal" class="w-11 h-11 rounded-full hover:bg-calc-2 dark:hover:bg-carbo-3 grid place-items-center" aria-label="Închide"><i class="fa-solid fa-xmark"></i></button>
       </div>
 
-      <form id="addLocationForm" class="space-y-3.5 mt-2">
+      <div class="mt-4 flex gap-2" role="tablist">
+        <button data-action="add-tab" data-tab="link" class="add-tab btn h-10 px-4 rounded-full hairline text-xs font-bold bg-white dark:bg-carbo-3"><i class="fa-solid fa-link"></i> Din link / Reel</button>
+        <button data-action="add-tab" data-tab="manual" class="add-tab btn h-10 px-4 rounded-full hairline text-xs font-bold bg-white dark:bg-carbo-3"><i class="fa-solid fa-pen"></i> Manual</button>
+      </div>
+
+      <div id="addTabLink" class="mt-4 space-y-2">
+        <label for="linkInput" class="text-xs font-semibold">Lipește linkul (Instagram, TikTok, Google Maps, articol…) sau textul primit prin Share</label>
+        <textarea id="linkInput" rows="3" placeholder="https://www.instagram.com/reel/… sau „Nume loc + https://maps.app.goo.gl/…”" class="w-full bg-white dark:bg-carbo-3 rounded-lg px-3.5 py-3 text-sm focus:outline-none"></textarea>
+        <div class="flex gap-2">
+          <button data-action="paste-link" class="btn h-11 px-4 rounded-full hairline text-xs font-bold bg-white dark:bg-carbo-3"><i class="fa-solid fa-paste"></i> Lipește</button>
+          <button data-action="parse-link" class="btn h-11 px-5 rounded-full bg-blau text-calc text-xs font-bold"><i class="fa-solid fa-wand-magic-sparkles"></i> Citește linkul</button>
+        </div>
+        <div id="linkResult" class="hidden rounded-lg bg-white dark:bg-carbo-3 hairline p-3 text-xs"></div>
+      </div>
+
+      <form id="addLocationForm" class="mt-4 space-y-3">
+        <input type="hidden" id="editingId" value="">
+        <input type="hidden" id="locLink" value="">
+        <input type="hidden" id="locSource" value="">
         <div>
-          <label for="locTitle" class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Numele locației *</label>
-          <input type="text" id="locTitle" required maxlength="120" placeholder="Ex: Satan's Coffee / Bodega La Balius" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-maraPurple">
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <div>
-            <label for="locAddedBy" class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Adăugat de *</label>
-            <select id="locAddedBy" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-maraPurple font-bold">
-              <option value="Daniel">Daniel</option><option value="Mara">Mara</option><option value="Anne">Anne</option>
-            </select>
-          </div>
-          <div>
-            <label for="locDay" class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Ziua *</label>
-            <select id="locDay" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-maraPurple">
-              <option value="thu">Joi (PortAventura)</option><option value="fri">Vineri (BCN & Poblenou)</option><option value="sat">Sâmbătă (Gòtic & Raval)</option><option value="sun">Duminică (Design & Sunset)</option><option value="mon">Luni (Quimet & Plajă)</option>
-            </select>
-          </div>
-          <div>
-            <label for="locCat" class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Categorie *</label>
-            <select id="locCat" required class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-maraPurple">
-              <option value="mara">✨ Mara (Sweets, Fashion, Fun)</option><option value="coffee">☕ Cafea & Bere Craft</option><option value="food">🍲 Tapas, Pho & Mâncare</option><option value="art">🖼️ Artă, Design & Vederi</option>
-            </select>
+          <label for="locTitle" class="text-xs font-semibold">Numele locului *</label>
+          <div class="flex gap-2 mt-1">
+            <input type="text" id="locTitle" required maxlength="120" placeholder="Ex: Satan's Coffee Corner" class="flex-1 min-w-0 bg-white dark:bg-carbo-3 rounded-lg px-3.5 h-12 text-sm focus:outline-none">
+            <button type="button" data-action="modal-search" class="btn h-12 px-4 rounded-full bg-verd text-calc text-xs font-bold whitespace-nowrap"><i class="fa-solid fa-map"></i> Maps</button>
           </div>
         </div>
-        <div>
-          <label for="locTime" class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Interval orar</label>
-          <input type="text" id="locTime" maxlength="60" placeholder="Ex: 19:30 – 21:00" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-maraPurple">
+        <div class="grid grid-cols-3 gap-2">
+          <div><label for="locAddedBy" class="text-xs font-semibold">Cine</label><select id="locAddedBy" class="mt-1 w-full bg-white dark:bg-carbo-3 rounded-lg px-2.5 h-12 text-sm font-semibold"><option value="Daniel">Daniel</option><option value="Mara">Mara</option><option value="Anne">Anne</option></select></div>
+          <div><label for="locDay" class="text-xs font-semibold">Ziua</label><select id="locDay" class="mt-1 w-full bg-white dark:bg-carbo-3 rounded-lg px-2.5 h-12 text-sm"><option value="thu">Joi 5</option><option value="fri">Vin 6</option><option value="sat">Sâm 7</option><option value="sun">Dum 8</option><option value="mon">Lun 9</option></select></div>
+          <div><label for="locCat" class="text-xs font-semibold">Tip</label><select id="locCat" class="mt-1 w-full bg-white dark:bg-carbo-3 rounded-lg px-2.5 h-12 text-sm"><option value="mara">Mara</option><option value="coffee">Cafea & bere</option><option value="food">Mâncare</option><option value="art">Artă & vederi</option></select></div>
         </div>
-        <div>
-          <label for="locDesc" class="block text-xs font-bold text-slate-600 dark:text-slate-300 mb-1">Note *</label>
-          <textarea id="locDesc" rows="3" required maxlength="1500" placeholder="Ce e bun aici? Sfaturi, adresă, de ce vrem să mergem…" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-maraPurple"></textarea>
+        <div class="grid grid-cols-2 gap-2">
+          <div><label for="locTime" class="text-xs font-semibold">Interval orar</label><input type="text" id="locTime" maxlength="60" placeholder="19:30 – 21:00" class="mt-1 w-full bg-white dark:bg-carbo-3 rounded-lg px-3.5 h-12 text-sm"></div>
+          <div><label for="locHours" class="text-xs font-semibold">Program (opțional)</label><input type="text" id="locHours" maxlength="120" placeholder="Lu–Vi 9–18" class="mt-1 w-full bg-white dark:bg-carbo-3 rounded-lg px-3.5 h-12 text-sm"></div>
         </div>
-        <div class="flex flex-wrap items-center gap-3 text-xs text-slate-600 dark:text-slate-300">
-          <label class="flex items-center gap-2"><input type="checkbox" id="locNear" class="rounded w-5 h-5 accent-amber-500"> Aproape de Poblenou</label>
-          <button type="button" data-action="use-my-position" id="useMyPosBtn" class="px-3 py-2 rounded-xl bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800 font-bold flex items-center gap-1.5"><i class="fa-solid fa-location-dot"></i> <span>Sunt aici acum (salvează poziția)</span></button>
+        <div><label for="locDesc" class="text-xs font-semibold">Note *</label><textarea id="locDesc" rows="3" required maxlength="1500" placeholder="De ce vrem să mergem, ce comandăm, adresa…" class="mt-1 w-full bg-white dark:bg-carbo-3 rounded-lg px-3.5 py-3 text-sm"></textarea></div>
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <label class="inline-flex items-center gap-2 h-11 px-3 rounded-full hairline"><input type="checkbox" id="locNear" class="w-5 h-5 accent-ocre"> Lângă Poblenou</label>
+          <button type="button" data-action="use-my-position" id="useMyPosBtn" class="btn h-11 px-4 rounded-full hairline font-bold inline-flex items-center gap-2"><i class="fa-solid fa-location-dot text-blau"></i> <span>Sunt aici acum</span></button>
+          <span id="posInfo" class="text-ink-3"></span>
         </div>
-        <button type="submit" id="saveLocBtn" class="btn-primary-action w-full py-3.5 rounded-2xl bg-gradient-to-r from-maraPink to-maraPurple text-white font-bold text-sm shadow-md">Salvează în programul comun</button>
+        <button type="submit" id="saveLocBtn" class="btn w-full h-14 xamfra-sm bg-vermell text-calc font-bold text-sm">Salvează în programul comun</button>
       </form>
     </div>
   </div>
 
-  <!-- Toast -->
-  <div id="toast" class="hidden-toast fixed left-1/2 -translate-x-1/2 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-[60] max-w-sm w-[calc(100%-2rem)] bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-2xl px-4 py-3 shadow-2xl text-sm font-medium flex items-center gap-3">
-    <i class="fa-solid fa-circle-check text-maraPurple text-lg"></i>
+  <!-- Bottom sheet: detaliu pin pe hartă -->
+  <div id="pinSheet" class="fixed inset-x-0 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-40 px-4 hidden">
+    <div class="max-w-md mx-auto rounded-2xl bg-white dark:bg-carbo-2 shadow-lift hairline p-4 flex items-center gap-3">
+      <div id="pinSheetIcon" class="w-11 h-11 shrink-0 xamfra-sm bg-blau text-calc grid place-items-center text-lg"><i class="fa-solid fa-location-dot"></i></div>
+      <div class="min-w-0 flex-1">
+        <div id="pinSheetTitle" class="font-display font-bold text-sm leading-snug truncate">…</div>
+        <div id="pinSheetMeta" class="text-[11px] text-ink-3 dark:text-calc-3 truncate">…</div>
+      </div>
+      <a id="pinSheetNav" href="#" target="_blank" rel="noopener" class="btn shrink-0 h-11 px-4 rounded-full bg-verd text-calc font-bold text-xs grid place-items-center"><span><i class="fa-solid fa-person-walking"></i> Navighează</span></a>
+      <button data-action="close-sheet" class="shrink-0 w-11 h-11 rounded-full hover:bg-calc dark:hover:bg-carbo-3 grid place-items-center" aria-label="Închide"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+  </div>
+
+  <!-- Snackbar -->
+  <div id="toast" class="hidden-toast fixed left-1/2 -translate-x-1/2 bottom-[calc(9.75rem+env(safe-area-inset-bottom))] z-[60] max-w-sm w-[calc(100%-2rem)] bg-ink dark:bg-calc text-calc dark:text-ink rounded-lg px-4 min-h-[48px] py-3 shadow-lift text-sm font-medium flex items-center gap-3">
+    <i class="fa-solid fa-circle-check text-ocre text-lg"></i>
     <span id="toastMessage">Mesaj</span>
   </div>
 
   <script src="/firebase-config.js"></script>
+  <script src="/vendor/leaflet/leaflet.js"></script>
   <script type="module" src="/app.js"></script>
 </body>
 </html>
