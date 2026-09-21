@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #F1F5F9; }
+.dark ::-webkit-scrollbar-track { background: #0F172A; }
+::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+.dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+.glass-header {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #E2E8F0;
+}
+.dark .glass-header {
+  background: rgba(15, 23, 42, 0.94);
+  border-bottom: 1px solid #1E293B;
+}
+
+.timeline-line::before {
+  content: '';
+  position: absolute;
+  top: 24px;
+  bottom: 24px;
+  left: 15px;
+  width: 3px;
+  background: linear-gradient(to bottom, #EC4899, #8B5CF6, #0EA5E9);
+  border-radius: 2px;
+  z-index: 0;
+}
+
+.btn-primary-action { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+.btn-primary-action:hover { transform: translateY(-1px); box-shadow: 0 6px 20px -4px rgba(139, 92, 246, 0.35); }
+.btn-primary-action:active { transform: translateY(0); }
+
+/* Toast */
+#toast { transition: opacity .25s ease, transform .25s ease; }
+#toast.hidden-toast { opacity: 0; transform: translateY(12px); pointer-events: none; }
+
+/* Safe area on iPhone */
+body { padding-bottom: calc(6rem + env(safe-area-inset-bottom)); }

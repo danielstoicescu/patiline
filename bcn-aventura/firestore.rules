@@ -1,0 +1,40 @@
+rules_version = '2';
+
+// Reguli pentru ghidul "Barcelona Aventura".
+// Aplicația nu cere autentificare (e un ghid de familie), dar Firestore acceptă doar
+// documente cu exact forma așteptată, ca să nu poată fi umplută cu date aleatorii.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function validLocation(d) {
+      return d.keys().hasOnly(['title', 'day', 'cat', 'time', 'desc', 'mapLink', 'addedBy', 'nearPoblenou', 'createdAt'])
+        && d.keys().hasAll(['title', 'day', 'cat', 'desc', 'addedBy', 'createdAt'])
+        && d.title is string && d.title.size() > 0 && d.title.size() <= 120
+        && d.day in ['thu', 'fri', 'sat', 'sun', 'mon']
+        && d.cat in ['mara', 'coffee', 'food', 'art']
+        && (!('time' in d) || (d.time is string && d.time.size() <= 60))
+        && d.desc is string && d.desc.size() <= 1500
+        && (!('mapLink' in d) || (d.mapLink is string && d.mapLink.size() <= 500))
+        && d.addedBy in ['Daniel', 'Mara', 'Anne']
+        && (!('nearPoblenou' in d) || d.nearPoblenou is bool)
+        && d.createdAt is timestamp;
+    }
+
+    function validState(d) {
+      return d.keys().hasOnly(['coffeeCount', 'quests', 'updatedAt'])
+        && (!('coffeeCount' in d) || (d.coffeeCount is int && d.coffeeCount >= 0 && d.coffeeCount <= 999))
+        && (!('quests' in d) || d.quests is map);
+    }
+
+    match /trips/bcn-aventura/locations/{locId} {
+      allow read: if true;
+      allow create, update: if validLocation(request.resource.data);
+      allow delete: if true;
+    }
+
+    match /trips/bcn-aventura/state/shared {
+      allow read: if true;
+      allow write: if validState(request.resource.data);
+    }
+  }
+}
