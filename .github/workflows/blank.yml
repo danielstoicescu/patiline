@@ -27,4 +27,3 @@ jobs:
           **/.git*/**
           .github/**
           README.md
-          bcn-aventura/**
