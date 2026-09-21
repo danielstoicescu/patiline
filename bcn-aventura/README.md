@@ -6,6 +6,15 @@ contorul de espresso al lui Daniel și „quest log”-ul Marei apar instant pe 
 
 Fără Firebase, aplicația merge oricum: totul se salvează local, pe telefonul respectiv.
 
+## Ce face (gândită pentru telefon, în excursie)
+- **Program pe zile** cu ore de deschidere, prețuri și zile gratuite (verificate online în sept. 2026; ce e marcat „Verifică” se confirmă în Maps).
+- **Recomandări similare pe zone** sub fiecare zi, cu „Adaugă în program”.
+- **Radar „lângă mine”**: pornit din aplicație, arată distanța pe jos până la locurile din program și dă alertă (banner + vibrație + notificare) când sunteți la ~150 m. Merge cât timp aplicația e deschisă pe ecran: un site nu poate urmări locația în fundal.
+- **Navighează** (Google Maps pe jos) și **Maps & ore** (orele live) pe fiecare card. „Fixează aici” salvează poziția exactă a unui loc, pentru toți.
+- **Bifează „Am fost”**, contorul de espresso, quest log-ul Marei și **notițe comune** (adresă, cod ușă, wifi), toate sincronizate live între telefoane.
+- **Vreme** pe zilele excursiei (Open-Meteo, apare cu ~2 săptămâni înainte), **numărătoare inversă**, tab-ul zilei curente se selectează singur, cardul „ACUM”.
+- **Offline**: după prima deschidere, aplicația pornește și fără semnal (service worker + cache Firestore). Se poate instala pe ecranul principal.
+
 ## Ce trebuie făcut o singură dată (≈10 minute)
 
 ### 1. Creează proiectul Firebase
@@ -24,10 +33,10 @@ Fără Firebase, aplicația merge oricum: totul se salvează local, pe telefonul
 - Automat: orice push pe `main` care atinge `bcn-aventura/` rulează workflow-ul **🔥 Deploy BCN Aventura to Firebase**.
 - Manual: GitHub → **Actions → 🔥 Deploy BCN Aventura to Firebase → Run workflow** (poți alege și alt branch).
 
-Linkul final: `https://<FIREBASE_PROJECT_ID>.web.app` – trimite-l Mărei și Annei pe WhatsApp (butonul verde din aplicație face asta).
+Linkul final: `https://<FIREBASE_PROJECT_ID>.web.app` – trimite-l Marei și Annei pe WhatsApp (butonul verde din aplicație face asta).
 
 ## Cum funcționează
-- `public/` este ce se publică (HTML + `app.js` + CSS compilat + iconițe + Font Awesome local).
+- `public/` este ce se publică (HTML + `app.js` + `data.js` cu programul și recomandările + CSS compilat + `sw.js` + iconițe + Font Awesome local). `npm run build` recompilează CSS-ul și pune o versiune nouă în `sw.js`.
 - Pe Firebase Hosting, aplicația își ia singură configurația de la `/__/firebase/init.json`, deci `firebase-config.js` poate rămâne gol.
 - Datele stau în Firestore la `trips/bcn-aventura/locations/*` (locațiile adăugate) și `trips/bcn-aventura/state/shared` (cafele + quest-uri).
 - Regulile (`firestore.rules`) nu cer login (ghid de familie), dar acceptă doar documente cu forma exactă așteptată.

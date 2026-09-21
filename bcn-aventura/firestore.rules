@@ -7,7 +7,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     function validLocation(d) {
-      return d.keys().hasOnly(['title', 'day', 'cat', 'time', 'desc', 'mapLink', 'addedBy', 'nearPoblenou', 'createdAt'])
+      return d.keys().hasOnly(['title', 'day', 'cat', 'time', 'desc', 'mapLink', 'addedBy', 'nearPoblenou', 'createdAt', 'lat', 'lng'])
         && d.keys().hasAll(['title', 'day', 'cat', 'desc', 'addedBy', 'createdAt'])
         && d.title is string && d.title.size() > 0 && d.title.size() <= 120
         && d.day in ['thu', 'fri', 'sat', 'sun', 'mon']
@@ -17,13 +17,18 @@ service cloud.firestore {
         && (!('mapLink' in d) || (d.mapLink is string && d.mapLink.size() <= 500))
         && d.addedBy in ['Daniel', 'Mara', 'Anne']
         && (!('nearPoblenou' in d) || d.nearPoblenou is bool)
+        && (!('lat' in d) || (d.lat is number && d.lat >= -90 && d.lat <= 90))
+        && (!('lng' in d) || (d.lng is number && d.lng >= -180 && d.lng <= 180))
         && d.createdAt is timestamp;
     }
 
     function validState(d) {
-      return d.keys().hasOnly(['coffeeCount', 'quests', 'updatedAt'])
+      return d.keys().hasOnly(['coffeeCount', 'quests', 'visited', 'pins', 'notes', 'updatedAt'])
         && (!('coffeeCount' in d) || (d.coffeeCount is int && d.coffeeCount >= 0 && d.coffeeCount <= 999))
-        && (!('quests' in d) || d.quests is map);
+        && (!('quests' in d) || d.quests is map)
+        && (!('visited' in d) || d.visited is map)
+        && (!('pins' in d) || d.pins is map)
+        && (!('notes' in d) || (d.notes is string && d.notes.size() <= 2000));
     }
 
     match /trips/bcn-aventura/locations/{locId} {
